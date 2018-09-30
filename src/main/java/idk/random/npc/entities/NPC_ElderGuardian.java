@@ -9,6 +9,7 @@ public class NPC_ElderGuardian extends NPC_Entity {
 
     public NPC_ElderGuardian(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+        this.setDataFlag(DATA_FLAGS, DATA_FLAG_ELDER, true);
     }
     
     @Override
