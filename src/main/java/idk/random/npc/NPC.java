@@ -13,6 +13,8 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.level.Level;
 import cn.nukkit.nbt.tag.StringTag;
 import idk.random.npc.entities.*;
+
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +24,10 @@ public class NPC extends PluginBase  {
     public static List<String> id = new ArrayList<>();
     public static List<String> kill = new ArrayList<>();
     public static List<String> entitys = Arrays.asList("Bat", "Blaze", "CaveSpider", "Chicken", "Cow", "Creeper",
-        "Donkey", "ElderGuardian", "EnderDragon", "Enderman", "Endermite", "Evoker", "Ghast", "Guardian",
-        "Horse", "Human", "Husk", "IronGolem", "Lama", "MushroomCow", "MagmaCube", "Mule", "Ocelot", "Pig",
-        "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
-        "Snowman", "Spider", "Squid", "Stray", "Vex", "Villager", "Vindicator", "Witch", "Wither",
+        "Dolphin", "Donkey", "ElderGuardian", "EnderDragon", "Enderman", "Endermite", "Evoker", "Ghast", "Guardian",
+        "Horse", "Human", "Husk", "IronGolem", "Lama", "Mooshroom", "MagmaCube", "Mule", "Ocelot", "Parrot", "Phantom",
+        "Pig", "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
+        "Snowman", "Spider", "Squid", "Stray", "Turtle", "Vex", "Villager", "Vindicator", "Witch", "Wither",
         "WitherSkeleton" , "Wolf", "ZombieHorse", "Zombie", "ZombiePigman", "ZombieVillager");
     
     @Override
@@ -40,7 +42,7 @@ public class NPC extends PluginBase  {
         Entity.registerEntity(NPC_Cow.class.getSimpleName(), NPC_Cow.class);
         Entity.registerEntity(NPC_Donkey.class.getSimpleName(), NPC_Donkey.class);
         Entity.registerEntity(NPC_Horse.class.getSimpleName(), NPC_Horse.class);
-        Entity.registerEntity(NPC_MushroomCow.class.getSimpleName(), NPC_MushroomCow.class);
+        Entity.registerEntity(NPC_Mooshroom.class.getSimpleName(), NPC_Mooshroom.class);
         Entity.registerEntity(NPC_Mule.class.getSimpleName(), NPC_Mule.class);
         Entity.registerEntity(NPC_Ocelot.class.getSimpleName(), NPC_Ocelot.class);
         Entity.registerEntity(NPC_Pig.class.getSimpleName(), NPC_Pig.class);
@@ -82,6 +84,11 @@ public class NPC extends PluginBase  {
         Entity.registerEntity(NPC_WitherSkeleton.class.getSimpleName(), NPC_WitherSkeleton.class);
         Entity.registerEntity(NPC_MagmaCube.class.getSimpleName(), NPC_MagmaCube.class);
         Entity.registerEntity(NPC_Human.class.getSimpleName(), NPC_Human.class);
+        Entity.registerEntity(NPC_Parrot.class.getSimpleName(), NPC_Parrot.class);
+        Entity.registerEntity(NPC_Dolphin.class.getSimpleName(), NPC_Dolphin.class);
+        Entity.registerEntity(NPC_Turtle.class.getSimpleName(), NPC_Turtle.class);
+        Entity.registerEntity(NPC_Phantom.class.getSimpleName(), NPC_Phantom.class);
+        Entity.registerEntity(NPC_Drowned.class.getSimpleName(), NPC_Drowned.class);
     }
 
     public CompoundTag nbt(Player sender, String[] args, String name) {
@@ -104,9 +111,13 @@ public class NPC extends PluginBase  {
          .putFloat("scale", 1);    
          if ("Human".equals(args[1])) {
              nbt.putCompound("Skin", new CompoundTag()
-                .putBoolean("Transparent", false)
-                .putByteArray("Data", sender.getSkin().getData())
-                .putString("ModelId", sender.getSkin().getModel()));
+                    .putString("ModelId", sender.getSkin().getGeometryName())
+                    .putByteArray("Data", sender.getSkin().getSkinData())
+                    .putString("ModelId", sender.getSkin().getSkinId())
+                    .putByteArray("CapeData", sender.getSkin().getCapeData())
+                    .putString("GeometryName", sender.getSkin().getGeometryName())
+                    .putByteArray("GeometryData", sender.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8))
+             );
              nbt.putBoolean("ishuman", true);
              nbt.putString("Item", sender.getInventory().getItemInHand().getName());
              nbt.putString("Helmet", sender.getInventory().getHelmet().getName());
@@ -125,13 +136,15 @@ public class NPC extends PluginBase  {
          }
          Player player = (Player) sender;
          switch (command.getName().toLowerCase()) {
-            case "npc":
+             case "npc":
                 if (args.length < 1) {
                     sender.sendMessage("\u00A7c/npc help");
                     return true;
                 }
                 switch(args[0].toLowerCase()) {
                     case "spawn":
+                    case "summon":
+                    case "create":
                         if (args.length < 2) { sender.sendMessage("\u00A7cusage: /npc spawn <entity> <name>"); return true; }
                         if (!entitys.contains(args[1])) {
                             sender.sendMessage("\u00A7cEntity \u00A74" + args[1] + "\u00A7c is not supportet, with the command \u00A7e/npc list\u00A7c you see all supportet entitys");
@@ -159,6 +172,7 @@ public class NPC extends PluginBase  {
                         sender.sendMessage("\u00A7aNPC spawned with the ID: " + ent.getId() + " and the name: " + ent.getName());
                         return true;
                     case "getid":
+                    case "id":
                         String pn = player.getNameTag();
                         id.add(pn);
                         player.sendMessage("\u00A7aID MODE - click an entity to get it's ID");
@@ -239,6 +253,8 @@ public class NPC extends PluginBase  {
                         PlayerInventory pl = player.getInventory();
                         switch (args[2].toLowerCase()) {
                             case "handitem":
+                            case "item":
+                            case "hand":
                                 if (e instanceof NPC_Human || e.namedTag.getBoolean("ishuman")) {
                                     NPC_Human nh = (NPC_Human) e;                                  
                                     nh.getInventory().setItemInHand(pl.getItemInHand());
@@ -270,6 +286,7 @@ public class NPC extends PluginBase  {
                                     return true;
                                 }  
                             case "scale":
+                            case "size":
                                 if (args.length < 4) {player.sendMessage("\u00A7cusage. /npc edit <ID> scale <int>  \u00A7edefault is 1"); return true; }
                                 boolean isf = isFloat(args[3]);
                                 if (!isf) {player.sendMessage("\u00A7cusage. /npc edit <ID> scale <int>  \u00A7edefault is 1"); return true; }
@@ -314,6 +331,9 @@ public class NPC extends PluginBase  {
                                     return true;
                                 }
                             case "gohere":
+                            case "tphere":
+                            case "tp":
+                            case "teleport":
                                 if (args.length < 2) {player.sendMessage("\u00A7cusage. /npc edit <ID> tphere");return true; }
                                 if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
                                     e.teleport(player);
@@ -324,6 +344,7 @@ public class NPC extends PluginBase  {
                             default:                         
                         }
                     case "remove":
+                    case "kill":
                        String nam = player.getNameTag();
                        if (kill.contains(nam)) {
                            kill.remove(nam);
@@ -335,6 +356,7 @@ public class NPC extends PluginBase  {
                        return true; 
                        }
                     case "entities":
+                    case "list":
                        sender.sendMessage("\u00A7aAvailable entities: " + entitys.toString());
                        return true;
                     default:
@@ -353,6 +375,6 @@ public class NPC extends PluginBase  {
         return false;
     }   
 
-    public static boolean isInteger(String s) { boolean isValidInteger = false; try { Integer.parseInt(s); isValidInteger = true; } catch (NumberFormatException ex) { } return isValidInteger; }
-    public static boolean isFloat(String s) { boolean isValidFloat = false; try { Float.parseFloat(s); isValidFloat = true; } catch (NumberFormatException ex) { } return isValidFloat; }  
+    public static boolean isInteger(String s) { boolean isValidInteger = false; try { Integer.parseInt(s); isValidInteger = true; } catch (NumberFormatException ex) {} return isValidInteger; }
+    public static boolean isFloat(String s) { boolean isValidFloat = false; try { Float.parseFloat(s); isValidFloat = true; } catch (NumberFormatException ex) {} return isValidFloat; }  
 }

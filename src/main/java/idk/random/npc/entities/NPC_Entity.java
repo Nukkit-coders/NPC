@@ -1,11 +1,9 @@
 package idk.random.npc.entities;
 
 import cn.nukkit.entity.Entity;
-import cn.nukkit.Player;
 import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.network.protocol.AddEntityPacket;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,23 +30,6 @@ public abstract class NPC_Entity extends Entity {
         this.mapp();
         this.setDataProperty(new FloatEntityData(Entity.DATA_BOUNDING_BOX_HEIGHT, map.getOrDefault(this.getNetworkId(), (float) 1)), true);
         this.setDataProperty(new FloatEntityData(DATA_SCALE, this.namedTag.getFloat("scale")));
-    }
-
-    @Override
-    public void spawnTo(Player player) {
-        AddEntityPacket pk = new AddEntityPacket();
-        pk.entityRuntimeId = this.getId();
-        pk.entityUniqueId = this.getId();
-        pk.type = this.getNetworkId();
-        pk.x = (float) this.x;
-        pk.y = (float) this.y;
-        pk.z = (float) this.z;
-        pk.speedX = pk.speedY = pk.speedZ = 0;
-        pk.yaw = (float) this.yaw;
-        pk.pitch = (float) this.pitch;
-        pk.metadata = this.dataProperties; 
-        player.dataPacket(pk);
-        super.spawnTo(player);
     }
 }
 	

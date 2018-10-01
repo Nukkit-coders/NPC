@@ -6,7 +6,7 @@
 
     <groupId>idk.random.npc</groupId>
     <artifactId>NPC</artifactId>
-    <version>1.0</version>
+    <version>2.0</version>
     <build>
         <defaultGoal>install</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
@@ -34,8 +34,8 @@
     </build>
     <repositories>
         <repository>
-            <id>mengcraft</id>
-            <url>http://ci.mengcraft.com:8080/plugin/repository/everything/</url>
+            <id>nukkitx</id>
+            <url>https://repo.nukkitx.com/main/</url>
         </repository>
     </repositories>
     <dependencies>

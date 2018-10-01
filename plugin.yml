@@ -1,7 +1,7 @@
 
 name: NPC
-version: "1.0"
-api: ["1.0.0"]
+version: "${pom.version}"
+api: ["1.0.7"]
 main: idk.random.npc.NPC
 
 commands:
@@ -11,5 +11,5 @@ commands:
     permission: npc
 permissions:
   npc:
-    description: ""
-    default: OP
+    description: "NPC permission"
+    default: op
