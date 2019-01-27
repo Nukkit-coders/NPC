@@ -23,9 +23,9 @@ public class NPC extends PluginBase  {
 
     public static List<String> id = new ArrayList<>();
     public static List<String> kill = new ArrayList<>();
-    public static List<String> entitys = Arrays.asList("Bat", "Blaze", "CaveSpider", "Chicken", "Cow", "Creeper",
+    public static final List<String> entitys = Arrays.asList("Bat", "Blaze", "Cat", "CaveSpider", "Chicken", "Cow", "Creeper",
         "Dolphin", "Donkey", "ElderGuardian", "EnderDragon", "Enderman", "Endermite", "Evoker", "Ghast", "Guardian",
-        "Horse", "Human", "Husk", "IronGolem", "Lama", "Mooshroom", "MagmaCube", "Mule", "Ocelot", "Parrot", "Phantom",
+        "Horse", "Human", "Husk", "IronGolem", "Lama", "Mooshroom", "MagmaCube", "Mule", "Ocelot", "Panda", "Parrot", "Phantom",
         "Pig", "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
         "Snowman", "Spider", "Squid", "Stray", "Turtle", "Vex", "Villager", "Vindicator", "Witch", "Wither",
         "WitherSkeleton" , "Wolf", "ZombieHorse", "Zombie", "ZombiePigman", "ZombieVillager");
@@ -89,6 +89,8 @@ public class NPC extends PluginBase  {
         Entity.registerEntity(NPC_Turtle.class.getSimpleName(), NPC_Turtle.class);
         Entity.registerEntity(NPC_Phantom.class.getSimpleName(), NPC_Phantom.class);
         Entity.registerEntity(NPC_Drowned.class.getSimpleName(), NPC_Drowned.class);
+        Entity.registerEntity(NPC_Cat.class.getSimpleName(), NPC_Cat.class);
+        Entity.registerEntity(NPC_Panda.class.getSimpleName(), NPC_Panda.class);
     }
 
     public CompoundTag nbt(Player sender, String[] args, String name) {
@@ -141,13 +143,13 @@ public class NPC extends PluginBase  {
                 if (args.length < 1) {
                     sender.sendMessage("\u00A7l\u00A7a--- NPC HELP ---");
                     sender.sendMessage("\u00A73Spawn NPC: \u00A7e/npc spawn <entity> <name>");
-                    sender.sendMessage("\u00A73Add command: \u00A7e/npc addcmd <ID> <cmd>");
+                    sender.sendMessage("\u00A73Add console command: \u00A7e/npc addcmd <ID> <cmd>");
                     sender.sendMessage("\u00A73Add player command: \u00A7e/npc addplayercmd <ID> <cmd>");
                     sender.sendMessage("\u00A73Delete command: \u00A7e/npc delcmd <ID> <cmd>");
                     sender.sendMessage("\u00A73See all commands: \u00A7e/npc listcmd <ID>");
                     sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>");
                     sender.sendMessage("\u00A73Get NPC's id: \u00A7e/npc getid");
-                    sender.sendMessage("\u00A73Get list of all availabel entities: \u00A7e/npc entities");
+                    sender.sendMessage("\u00A73Get list of all available entities: \u00A7e/npc entities");
                     sender.sendMessage("\u00A73Remove NPC: \u00A7e/npc remove");
                     return true;
                 }
@@ -407,13 +409,13 @@ public class NPC extends PluginBase  {
                     default:
                         sender.sendMessage("\u00A7l\u00A7a--- NPC HELP ---");
                         sender.sendMessage("\u00A73Spawn NPC: \u00A7e/npc spawn <entity> <name>");
-                        sender.sendMessage("\u00A73Add command: \u00A7e/npc addcmd <ID> <cmd>");
+                        sender.sendMessage("\u00A73Add console command: \u00A7e/npc addcmd <ID> <cmd>");
                         sender.sendMessage("\u00A73Add player command: \u00A7e/npc addplayercmd <ID> <cmd>");
                         sender.sendMessage("\u00A73Delete command: \u00A7e/npc delcmd <ID> <cmd>");
                         sender.sendMessage("\u00A73See all commands: \u00A7e/npc listcmd <ID>");
                         sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>");
                         sender.sendMessage("\u00A73Get NPC's id: \u00A7e/npc getid");
-                        sender.sendMessage("\u00A73Get list of all availabel entities: \u00A7e/npc entities");
+                        sender.sendMessage("\u00A73Get list of all available entities: \u00A7e/npc entities");
                         sender.sendMessage("\u00A73Remove NPC: \u00A7e/npc remove");
                         return true;
                 }   
