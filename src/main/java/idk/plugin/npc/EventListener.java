@@ -49,7 +49,6 @@ public class EventListener implements Listener {
                     NPC.kill.remove(name);
 
                 } else {
-
                     List<StringTag> cmddd = entity.namedTag.getList("Commands", StringTag.class).getAll();
                     for (StringTag cmdd : cmddd) {
                         String cmd = cmdd.data;

@@ -20,6 +20,8 @@ public class NPC_Human extends EntityHuman {
         if (!this.hasSpawned.containsKey(player.getLoaderId())) {
             this.hasSpawned.put(player.getLoaderId(), player);
 
+            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, new Player[]{player});
+
             AddPlayerPacket pk = new AddPlayerPacket();
             pk.uuid = this.getUniqueId();
             pk.username = this.getName();
@@ -44,7 +46,11 @@ public class NPC_Human extends EntityHuman {
             this.inventory.setBoots(Item.fromString(this.namedTag.getString("Boots")));
             
             this.inventory.sendArmorContents(player);
-                
+
+            if (this instanceof NPC_Human) {
+                this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
+            }
+
             super.spawnTo(player);
         }
     }

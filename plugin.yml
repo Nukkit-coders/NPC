@@ -1,4 +1,3 @@
-
 name: NPC
 version: "${pom.version}"
 api: ["1.0.7"]
