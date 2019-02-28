@@ -10,7 +10,6 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.inventory.PlayerInventory;
-import cn.nukkit.level.Level;
 import cn.nukkit.nbt.tag.StringTag;
 import idk.plugin.npc.entities.*;
 
@@ -23,7 +22,7 @@ public class NPC extends PluginBase  {
 
     public static List<String> id = new ArrayList<>();
     public static List<String> kill = new ArrayList<>();
-    public static final List<String> entitys = Arrays.asList("Bat", "Blaze", "Cat", "CaveSpider", "Chicken", "Cow", "Creeper",
+    public static final List<String> entities = Arrays.asList("Bat", "Blaze", "Cat", "CaveSpider", "Chicken", "Cow", "Creeper",
         "Dolphin", "Donkey", "ElderGuardian", "EnderDragon", "Enderman", "Endermite", "Evoker", "Ghast", "Guardian",
         "Horse", "Human", "Husk", "IronGolem", "Lama", "Mooshroom", "MagmaCube", "Mule", "Ocelot", "Panda", "Parrot", "Phantom",
         "Pig", "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
@@ -147,7 +146,7 @@ public class NPC extends PluginBase  {
                     sender.sendMessage("\u00A73Add player command: \u00A7e/npc addplayercmd <ID> <cmd>");
                     sender.sendMessage("\u00A73Delete command: \u00A7e/npc delcmd <ID> <cmd>");
                     sender.sendMessage("\u00A73See all commands: \u00A7e/npc listcmd <ID>");
-                    sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>");
+                    sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere>");
                     sender.sendMessage("\u00A73Get NPC's id: \u00A7e/npc getid");
                     sender.sendMessage("\u00A73Get list of all available entities: \u00A7e/npc entities");
                     sender.sendMessage("\u00A73Remove NPC: \u00A7e/npc remove");
@@ -155,9 +154,12 @@ public class NPC extends PluginBase  {
                 }
                 switch(args[0].toLowerCase()) {
                     case "spawn":
-                        if (args.length < 2) { sender.sendMessage("\u00A7cusage: /npc spawn <entity> <name>"); return true; }
-                        if (!entitys.contains(args[1])) {
-                            sender.sendMessage("\u00A7cEntity \u00A74" + args[1] + "\u00A7c is not supportet, with the command \u00A7e/npc list\u00A7c you see all supportet entitys");
+                        if (args.length < 2) {
+                            sender.sendMessage("\u00A7cUsage: /npc spawn <entity> <name>");
+                            return true;
+                        }
+                        if (!entities.contains(args[1])) {
+                            sender.sendMessage("\u00A7cEntity \u00A74" + args[1] + "\u00A7c is not supported, with the command \u00A7e/npc list\u00A7c you see all supported entities");
                             return true;
                         }
                         String name;
@@ -183,17 +185,19 @@ public class NPC extends PluginBase  {
                         return true;
                     case "getid":
                     case "id":
-                        String pn = player.getNameTag();
-                        id.add(pn);
+                        id.add(player.getName());
                         player.sendMessage("\u00A7aID MODE - click an entity to get it's ID");
                         return true;                                 
                     case "addcmd":
-                        boolean in = isInteger(args[1]);
-                        if (!in) { player.sendMessage("\u00A7cusage: /npc addcmd <ID> <cmd>"); return true; }
-                        if (args.length < 3) { sender.sendMessage("\u00A7cusage: /npc addcmd <id> <cmd>"); return true; }                       
-                        Level level = player.getLevel();
-                        int eid = Integer.parseInt(args[1]);
-                        Entity enti = level.getEntity(eid);
+                        if (!isInteger(args[1])) {
+                            player.sendMessage("\u00A7cUsage: /npc addcmd <ID> <cmd>");
+                            return true;
+                        }
+                        if (args.length < 3) {
+                            sender.sendMessage("\u00A7cUsage: /npc addcmd <id> <cmd>");
+                            return true;
+                        }
+                        Entity enti = player.getLevel().getEntity(Integer.parseInt(args[1]));
                         if (enti instanceof NPC_Human || enti instanceof NPC_Entity || enti.namedTag.getBoolean("npc")) {
                         String delimite = " ";       
                         String cmd; 
@@ -213,18 +217,15 @@ public class NPC extends PluginBase  {
                             return true;
                         }
                     case "addplayercmd":
-                        boolean in2 = isInteger(args[1]);
-                        if (!in2) {
-                            player.sendMessage("\u00A7cusage: /npc addplayercmd <ID> <cmd>");
+                        if (!isInteger(args[1])) {
+                            player.sendMessage("\u00A7cUsage: /npc addplayercmd <ID> <cmd>");
                             return true;
                         }
                         if (args.length < 3) {
-                            sender.sendMessage("\u00A7cusage: /npc addplayercmd <id> <cmd>");
+                            sender.sendMessage("\u00A7cUsage: /npc addplayercmd <id> <cmd>");
                             return true;
                         }
-                        Level level2 = player.getLevel();
-                        int eid2 = Integer.parseInt(args[1]);
-                        Entity enti2 = level2.getEntity(eid2);
+                        Entity enti2 = player.getLevel().getEntity(Integer.parseInt(args[1]));
                         if (enti2 instanceof NPC_Human || enti2 instanceof NPC_Entity || enti2.namedTag.getBoolean("npc")) {
                             String delimite = " ";
                             String cmd;
@@ -244,22 +245,25 @@ public class NPC extends PluginBase  {
                             return true;
                         }
                     case "listcmd":
-                        if (args.length < 2) { sender.sendMessage("\u00A7cusage: /npc listcmd <ID>");return true; }
-                        boolean isint = isInteger(args[1]);
-                        if (!isint) { sender.sendMessage("\u00A7cusage: /npc listcmdd <ID>"); return true; }
+                        if (args.length < 2) {
+                            sender.sendMessage("\u00A7cUsage: /npc listcmd <ID>");
+                            return true;
+                        }
+                        if (!isInteger(args[1])) {
+                            sender.sendMessage("\u00A7cUsage: /npc listcmdd <ID>");
+                            return true;
+                        }
                         Entity entity = player.getLevel().getEntity(Integer.parseInt(args[1]));
                         if (entity instanceof NPC_Entity || entity instanceof NPC_Human || entity.namedTag.getBoolean("npc")) {
                         List<StringTag> cmddd = entity.namedTag.getList("Commands", StringTag.class).getAll();
                         player.sendMessage("\u00A7aCommands of \u00A7e" + entity.getName() + " ("+ entity.getId() + ")\u00A7a:");
                         for (StringTag cmdd : cmddd) {
-                            String cmdlist = cmdd.data;
-                            player.sendMessage(cmdlist);
+                            player.sendMessage(cmdd.data);
                         }
                         List<StringTag> cmdddd = entity.namedTag.getList("PlayerCommands", StringTag.class).getAll();
                         player.sendMessage("\u00A7aPlayer commands of \u00A7e" + entity.getName() + " ("+ entity.getId() + ")\u00A7a:");
                         for (StringTag cmdd : cmdddd) {
-                            String cmdlist = cmdd.data;
-                            player.sendMessage(cmdlist);
+                            player.sendMessage(cmdd.data);
                         }
                         return true;
                         } else {
@@ -267,11 +271,15 @@ public class NPC extends PluginBase  {
                             return true;
                         }
                     case "delcmd":
-                        boolean inte = isInteger(args[1]);
-                        if (!inte) { player.sendMessage("\u00A7cusage: /npc delcmd <ID> <cmd>"); return true; }
-                        if (args.length < 3) { sender.sendMessage("\u00A7cusage: /npc delcmd <id> <cmd>"); return true; }                       
-                        Level l = player.getLevel();
-                        Entity en = l.getEntity(Integer.parseInt(args[1]));
+                        if (!isInteger(args[1])) {
+                            player.sendMessage("\u00A7cUsage: /npc delcmd <ID> <cmd>");
+                            return true;
+                        }
+                        if (args.length < 3) {
+                            sender.sendMessage("\u00A7cUsage: /npc delcmd <id> <cmd>");
+                            return true;
+                        }
+                        Entity en = player.getLevel().getEntity(Integer.parseInt(args[1]));
                         if (en instanceof NPC_Human || en instanceof NPC_Entity || en.namedTag.getBoolean("npc")) {
                         String delimite = " ";       
                         String cmd; 
@@ -281,10 +289,10 @@ public class NPC extends PluginBase  {
                         StringTag st = new StringTag(cmd, cmd);
                         if (en.namedTag.getList("Commands", StringTag.class).getAll().contains(st)) {
                             en.namedTag.getList("Commands", StringTag.class).remove(st);
-                            player.sendMessage("\u00A7aCommand\u00A7e" + cmd + "\u00A7a  removed");
+                            player.sendMessage("\u00A7aCommand\u00A7e" + cmd + "\u00A7a removed");
                             return true;
                         } else {
-                            player.sendMessage("\u00A7cCommand\u00A7e" + cmd + "\u00A7c  not found"); 
+                            player.sendMessage("\u00A7cCommand\u00A7e" + cmd + "\u00A7c not found"); 
                             return true;
                         }
                         } else {
@@ -292,11 +300,19 @@ public class NPC extends PluginBase  {
                             return true;
                         }
                     case "edit":
-                        if (args.length < 3) { player.sendMessage("\u00A7cusage: /npc edit <ID> <item|armor|scale|name> <scale int|name>"); return true; }
-                        boolean ii = isInteger(args[1]);
-                        if (!ii) { sender.sendMessage("\u00A7cusage: /npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>"); return true; }
+                        if (args.length < 3) {
+                            player.sendMessage("\u00A7cUsage: /npc edit <ID> <item|armor|scale|name> <scale int|name>");
+                            return true;
+                        }
+                        if (!isInteger(args[1])) {
+                            sender.sendMessage("\u00A7cUsage: /npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>");
+                            return true;
+                        }
                         Entity e = player.getLevel().getEntity(Integer.parseInt(args[1])); 
-                        if (e==null) {player.sendMessage("\u00A7cno entity found with that ID"); return true; } 
+                        if (e == null) {
+                            player.sendMessage("\u00A7cno entity found with that ID");
+                            return true;
+                        }
                         PlayerInventory pl = player.getInventory();
                         switch (args[2].toLowerCase()) {
                             case "handitem":
@@ -309,7 +325,7 @@ public class NPC extends PluginBase  {
                                     nh.namedTag.putString("Item", pl.getItemInHand().getName());
                                     return true;          
                                 } else {
-                                    player.sendMessage("\u00A7cThat entity can't have that");
+                                    player.sendMessage("\u00A7cThat entity can't have item");
                                     return true;
                                 }                              
                             case "armor":
@@ -321,7 +337,7 @@ public class NPC extends PluginBase  {
                                     nh.getInventory().setChestplate(pl.getChestplate());
                                     player.sendMessage("\u00A7aChestplate changed to \u00A7e" + pl.getChestplate().getName());
                                     nh.namedTag.putString("Chestplate", pl.getChestplate().getName());
-                                     nh.getInventory().setLeggings(pl.getLeggings());
+                                    nh.getInventory().setLeggings(pl.getLeggings());
                                     player.sendMessage("\u00A7aLeggings changed to \u00A7e" + pl.getLeggings().getName());
                                     nh.namedTag.putString("Leggings", pl.getLeggings().getName());
                                     nh.getInventory().setBoots(pl.getBoots());
@@ -334,10 +350,18 @@ public class NPC extends PluginBase  {
                                 }  
                             case "scale":
                             case "size":
-                                if (args.length < 4) {player.sendMessage("\u00A7cusage. /npc edit <ID> scale <int>  \u00A7edefault is 1"); return true; }
-                                boolean isf = isFloat(args[3]);
-                                if (!isf) {player.sendMessage("\u00A7cusage. /npc edit <ID> scale <int>  \u00A7edefault is 1"); return true; }
-                                if (Float.parseFloat(args[3])>25) {player.sendMessage("\u00A7cmax scale is 25"); return true; }
+                                if (args.length < 4) {
+                                    player.sendMessage("\u00A7cUsage: /npc edit <ID> scale <int> \u00A7eDefault is 1.");
+                                    return true;
+                                }
+                                if (!isFloat(args[3])) {
+                                    player.sendMessage("\u00A7cUsage: /npc edit <ID> scale <int>  \u00A7eDefault is 1.");
+                                    return true;
+                                }
+                                if (Float.parseFloat(args[3]) > 25) {
+                                    player.sendMessage("\u00A7cMax scale is 25");
+                                    return true;
+                                }
                                 if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
                                     e.setScale(Float.parseFloat(args[3]));
                                     e.namedTag.putFloat("scale", Float.parseFloat(args[3]));
@@ -348,9 +372,12 @@ public class NPC extends PluginBase  {
                                     return true;
                                  }
                             case "name":
-                                if (args.length < 3) {player.sendMessage("\u00A7cusage. /npc edit <ID> name <name>");return true; }
+                                if (args.length < 3) {
+                                    player.sendMessage("\u00A7cUsage: /npc edit <ID> name <name>");
+                                    return true;
+                                }
                                 if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
-                                    if (args.length!=3) {
+                                    if (args.length != 3) {
                                     String delimiter = " ";       
                                     name = String.join(delimiter, args);
                                     name = name.replaceFirst("edit", "");
@@ -381,7 +408,10 @@ public class NPC extends PluginBase  {
                             case "tphere":
                             case "tp":
                             case "teleport":
-                                if (args.length < 2) {player.sendMessage("\u00A7cusage. /npc edit <ID> tphere");return true; }
+                                if (args.length < 2) {
+                                    player.sendMessage("\u00A7cUsage: /npc edit <ID> tphere");
+                                    return true;
+                                }
                                 if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
                                     e.teleport(player);
                                     e.respawnToAll();
@@ -392,19 +422,18 @@ public class NPC extends PluginBase  {
                         }
                     case "remove":
                     case "kill":
-                       String nam = player.getNameTag();
-                       if (kill.contains(nam)) {
-                           kill.remove(nam);
+                       if (kill.contains(player.getName())) {
+                           kill.remove(player.getName());
                            player.sendMessage("\u00A7cKill mode deactivated");
                            return true;
                        } else {
-                       kill.add(nam);
+                       kill.add(player.getName());
                        player.sendMessage("\u00A7aKILL MODE - click an entity to remove it");
                        return true; 
                        }
                     case "entities":
                     case "list":
-                       sender.sendMessage("\u00A7aAvailable entities: \u00A73" + entitys.toString());
+                       sender.sendMessage("\u00A7aAvailable entities: \u00A73" + entities.toString());
                        return true;
                     default:
                         sender.sendMessage("\u00A7l\u00A7a--- NPC HELP ---");
@@ -413,7 +442,7 @@ public class NPC extends PluginBase  {
                         sender.sendMessage("\u00A73Add player command: \u00A7e/npc addplayercmd <ID> <cmd>");
                         sender.sendMessage("\u00A73Delete command: \u00A7e/npc delcmd <ID> <cmd>");
                         sender.sendMessage("\u00A73See all commands: \u00A7e/npc listcmd <ID>");
-                        sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere> <scale int|name>");
+                        sender.sendMessage("\u00A73Edit NPC: \u00A7e/npc edit <ID> <item|armor|scale|name|tphere>");
                         sender.sendMessage("\u00A73Get NPC's id: \u00A7e/npc getid");
                         sender.sendMessage("\u00A73Get list of all available entities: \u00A7e/npc entities");
                         sender.sendMessage("\u00A73Remove NPC: \u00A7e/npc remove");
@@ -423,6 +452,21 @@ public class NPC extends PluginBase  {
         return false;
     }   
 
-    public static boolean isInteger(String s) { boolean isValidInteger = false; try { Integer.parseInt(s); isValidInteger = true; } catch (NumberFormatException ex) {} return isValidInteger; }
-    public static boolean isFloat(String s) { boolean isValidFloat = false; try { Float.parseFloat(s); isValidFloat = true; } catch (NumberFormatException ex) {} return isValidFloat; }  
+    public boolean isInteger(String s) {
+	    try {
+	        Integer.parseInt(s);
+            return true;
+	    } catch (NumberFormatException ex) {
+	        return false;
+        }
+	}
+
+    public boolean isFloat(String s) {
+        try {
+            Float.parseFloat(s);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
+    }
 }
