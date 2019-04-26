@@ -11,12 +11,12 @@ public abstract class NPC_Entity extends Entity {
 
     Map<Integer, Float> map = new HashMap<>();
 
-    public final void mapp() {
+    private void mapp() {
         map.put(10, (float)0.4); map.put(11, (float)1.0); map.put(12, (float)0.6); map.put(13, (float)0.8);
         map.put(14, (float)0.4); map.put(15, (float)1.4); map.put(16, (float)0.8); map.put(17, (float)0.6);
         map.put(18, (float)0.4); map.put(19, (float)0.4); map.put(20, (float)2.4); map.put(21, (float)1.2);
         map.put(22, (float)0.4); map.put(23, (float)1.2); map.put(24, (float)0.9); map.put(25, (float)1.2);
-        map.put(26, (float)1.2); map.put(27, (float)1.2);
+        map.put(26, (float)1.2); map.put(27, (float)1.2); map.put(114, (float)1.95); map.put(118, (float)1.95);
         map.put(32, (float)1.4); map.put(33, (float)1.2); map.put(34, (float)1.4); map.put(35, (float)0.5);
         map.put(36, (float)1.4); map.put(37, (float)1.0); map.put(38, (float)2.4); map.put(39, (float)0.4);
         map.put(40, (float)0.2); map.put(41, (float)4.5); map.put(42, (float)1.0); map.put(43, (float)1.4);

@@ -3,10 +3,11 @@ package idk.plugin.npc;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.entity.EntitySpawnEvent;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntitySpawnEvent;
+import cn.nukkit.event.entity.EntityVehicleEnterEvent;
 import cn.nukkit.nbt.tag.StringTag;
 import idk.plugin.npc.entities.NPC_Entity;
 import idk.plugin.npc.entities.NPC_Human;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class EventListener implements Listener {
 
-    @EventHandler(ignoreCancelled = false)
+    @EventHandler
     public void onSpawnNPC(EntitySpawnEvent ev) {
         Entity entity = ev.getEntity();
 
@@ -27,18 +28,18 @@ public class EventListener implements Listener {
             }
         }
     }
-    
-    @EventHandler(ignoreCancelled = false)
+
+    @EventHandler
     public void onHitNPC(EntityDamageByEntityEvent ev) {
         Entity entity = ev.getEntity();
 
         if (entity instanceof NPC_Entity || entity instanceof NPC_Human || entity.namedTag.getBoolean("npc")) {
             ev.setCancelled();
-          
+
             if (ev.getDamager() instanceof Player) {
-                      Player player = (Player) ev.getDamager();
-                      String name = player.getName();
-            
+                Player player = (Player) ev.getDamager();
+                String name = player.getName();
+
                 if (NPC.id.contains(name)) {
                     player.sendMessage("\u00A7aThe ID from that entity is " + entity.getId());
                     NPC.id.remove(name);
@@ -62,7 +63,14 @@ public class EventListener implements Listener {
                         Server.getInstance().dispatchCommand(player, cmd);
                     }
                 }
-            }  
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEnterVehicle(EntityVehicleEnterEvent e) {
+        if (e.getEntity() instanceof NPC_Entity || e.getEntity() instanceof NPC_Human) {
+            e.setCancelled(true);
         }
     }
 }

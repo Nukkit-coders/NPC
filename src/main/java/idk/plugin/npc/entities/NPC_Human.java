@@ -47,9 +47,7 @@ public class NPC_Human extends EntityHuman {
             
             this.inventory.sendArmorContents(player);
 
-            if (this instanceof NPC_Human) {
-                this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
-            }
+            this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
 
             super.spawnTo(player);
         }
