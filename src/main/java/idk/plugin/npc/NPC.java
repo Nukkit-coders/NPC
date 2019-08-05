@@ -53,7 +53,6 @@ public class NPC extends PluginBase {
         Entity.registerEntity(NPC_Snowman.class.getSimpleName(), NPC_Snowman.class);
         Entity.registerEntity(NPC_Lama.class.getSimpleName(), NPC_Lama.class);
         Entity.registerEntity(NPC_Squid.class.getSimpleName(), NPC_Squid.class);
-        Entity.registerEntity(NPC_Villager.class.getSimpleName(), NPC_Villager.class);
         Entity.registerEntity(NPC_Vindicator.class.getSimpleName(), NPC_Vindicator.class);
         Entity.registerEntity(NPC_Vex.class.getSimpleName(), NPC_Vex.class);
         Entity.registerEntity(NPC_IronGolem.class.getSimpleName(), NPC_IronGolem.class);
