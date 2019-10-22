@@ -53,7 +53,7 @@ public class EventListener implements Listener {
                     List<StringTag> cmddd = entity.namedTag.getList("Commands", StringTag.class).getAll();
                     for (StringTag cmdd : cmddd) {
                         String cmd = cmdd.data;
-                        cmd = cmd.replaceAll("%p", player.getName());
+                        cmd = cmd.replaceAll("%p", "\"" + player.getName() + "\"");
                         Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), cmd);
                     }
 
