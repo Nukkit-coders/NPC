@@ -6,7 +6,7 @@
 
     <groupId>idk.plugin.npc</groupId>
     <artifactId>NPC</artifactId>
-    <version>2.2.5</version>
+    <version>2.2.6</version>
     <build>
         <defaultGoal>install</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
@@ -44,6 +44,13 @@
             <artifactId>nukkit</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
+            <!-- Use to build for experimental Nukkit builds
+            <scope>system</scope>
+            <systemPath>${basedir}/nukkit-1.0-SNAPSHOT.jar</systemPath>
+            -->
         </dependency>
     </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>

@@ -22,8 +22,8 @@ public class NPC extends PluginBase {
             "Pig", "Pillager", "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
             "Snowman", "Spider", "Squid", "Stray", "Turtle", "Vex", "Villager", "Vindicator", "WanderingTrader", "Witch", "Wither",
             "WitherSkeleton", "Wolf", "ZombieHorse", "Zombie", "ZombiePigman", "ZombieVillager");
-    public static List<String> id = new ArrayList<>();
-    public static List<String> kill = new ArrayList<>();
+    static List<String> id = new ArrayList<>();
+    static List<String> kill = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -110,13 +110,10 @@ public class NPC extends PluginBase {
                 .putFloat("scale", 1);
         if ("Human".equals(args[1])) {
             nbt.putCompound("Skin", new CompoundTag()
-                    .putString("ModelId", sender.getSkin().getGeometryName())
-                    .putByteArray("Data", sender.getSkin().getSkinData())
+                    .putByteArray("Data", sender.getSkin().getSkinData().data)
                     .putString("ModelId", sender.getSkin().getSkinId())
-                    .putByteArray("CapeData", sender.getSkin().getCapeData())
-                    .putString("GeometryName", sender.getSkin().getGeometryName())
-                    .putByteArray("GeometryData", sender.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8))
-            );
+                    .putString("GeometryName", "geometry.humanoid.custom")
+                    .putByteArray("GeometryData", sender.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8)));
             nbt.putBoolean("ishuman", true);
             nbt.putString("Item", sender.getInventory().getItemInHand().getName());
             nbt.putString("Helmet", sender.getInventory().getHelmet().getName());
@@ -491,7 +488,7 @@ public class NPC extends PluginBase {
         return true;
     }
 
-    public boolean isInteger(String s) {
+    private boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
             return true;
@@ -500,7 +497,7 @@ public class NPC extends PluginBase {
         }
     }
 
-    public boolean isFloat(String s) {
+    private boolean isFloat(String s) {
         try {
             Float.parseFloat(s);
             return true;

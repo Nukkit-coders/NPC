@@ -1,6 +1,6 @@
 name: NPC
 version: "${pom.version}"
-api: ["1.0.7"]
+api: ["1.0.9"]
 author: PetteriM1
 main: idk.plugin.npc.NPC
 
