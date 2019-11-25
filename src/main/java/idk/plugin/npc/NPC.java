@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class NPC extends PluginBase {
 
@@ -111,7 +112,7 @@ public class NPC extends PluginBase {
         if ("Human".equals(args[1])) {
             nbt.putCompound("Skin", new CompoundTag()
                     .putByteArray("Data", sender.getSkin().getSkinData().data)
-                    .putString("ModelId", sender.getSkin().getSkinId())
+                    .putString("ModelId", UUID.randomUUID().toString())
                     .putString("GeometryName", "geometry.humanoid.custom")
                     .putByteArray("GeometryData", sender.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8)));
             nbt.putBoolean("ishuman", true);
