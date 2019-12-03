@@ -127,7 +127,7 @@ public class NPC extends PluginBase {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender == this.getServer().getConsoleSender()) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("\u00A7cThis command only works in game");
             return true;
         }
