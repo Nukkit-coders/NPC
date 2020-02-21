@@ -9,9 +9,9 @@ import java.util.Map;
 
 public abstract class NPC_Entity extends Entity {
 
-    Map<Integer, Float> map = new HashMap<>();
+    static Map<Integer, Float> map = new HashMap<>();
 
-    private void mapp() {
+    static {
         map.put(10, (float)0.4); map.put(11, (float)1.0); map.put(12, (float)0.6); map.put(13, (float)0.8);
         map.put(14, (float)0.4); map.put(15, (float)1.4); map.put(16, (float)0.8); map.put(17, (float)0.6);
         map.put(18, (float)0.4); map.put(19, (float)0.4); map.put(20, (float)2.4); map.put(21, (float)1.2);
@@ -27,7 +27,6 @@ public abstract class NPC_Entity extends Entity {
 
     public NPC_Entity(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-        this.mapp();
         this.setDataProperty(new FloatEntityData(Entity.DATA_BOUNDING_BOX_HEIGHT, map.getOrDefault(this.getNetworkId(), (float) 1)), true);
         this.setDataProperty(new FloatEntityData(DATA_SCALE, this.namedTag.getFloat("scale")));
     }
