@@ -7,50 +7,43 @@
     <groupId>idk.plugin.npc</groupId>
     <artifactId>NPC</artifactId>
     <version>2.2.7</version>
+
     <build>
-        <defaultGoal>install</defaultGoal>
-        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources/</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>plugin.yml</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <repositories>
         <repository>
             <id>nukkitx</id>
             <url>https://repo.nukkitx.com/main/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>cn.nukkit</groupId>
             <artifactId>nukkit</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
-            <!-- Use to build for experimental Nukkit builds
-            <scope>system</scope>
-            <systemPath>${basedir}/nukkit-1.0-SNAPSHOT.jar</systemPath>
-            -->
         </dependency>
     </dependencies>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 </project>
