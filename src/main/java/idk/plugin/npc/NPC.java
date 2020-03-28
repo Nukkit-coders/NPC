@@ -1,6 +1,7 @@
 package idk.plugin.npc;
 
 import cn.nukkit.Player;
+import cn.nukkit.Server;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
@@ -8,6 +9,8 @@ import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.plugin.PluginBase;
 import idk.plugin.npc.entities.*;
+import idk.plugin.npc.listeners.EntityDamageListener;
+import idk.plugin.npc.listeners.EntityVehicleEnterListener;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -23,13 +26,16 @@ public class NPC extends PluginBase {
             "Snowman", "Spider", "Squid", "Stray", "Turtle", "Vex", "Villager", "Vindicator", "WanderingTrader", "Witch", "Wither",
             "WitherSkeleton", "Wolf", "ZombieHorse", "Zombie", "ZombiePigman", "ZombieVillager");
 
-    static List<String> id = new ArrayList<>();
-    static List<String> kill = new ArrayList<>();
+    public static List<String> id = new ArrayList<>();
+    public static List<String> kill = new ArrayList<>();
 
     @Override
     public void onEnable() {
         registerNPC();
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
+        Arrays.asList(
+                new EntityDamageListener(),
+                new EntityVehicleEnterListener()
+        ).forEach(listener -> Server.getInstance().getPluginManager().registerEvents(listener, this));
     }
 
     private void registerNPC() {
