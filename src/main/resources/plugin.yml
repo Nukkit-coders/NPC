@@ -1,15 +1,9 @@
 name: NPC
 version: "${pom.version}"
 api: ["1.0.9"]
-author: PetteriM1
-main: idk.plugin.npc.NPC
+author: PetteriM1, kkdevs
+main: idk.plugin.npc.Loader
 
-commands:
-  npc:
-    description: NPC command
-    usage: "/npc"
-    permission: npc.edit
 permissions:
-  npc.edit:
-    description: "NPC permission"
+  npc.use:
     default: op

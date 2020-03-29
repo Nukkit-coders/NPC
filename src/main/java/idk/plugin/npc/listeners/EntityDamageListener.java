@@ -43,10 +43,22 @@ public class EntityDamageListener implements Listener {
                     }
 
                     List<StringTag> consoleCommands = namedTag.getList("Commands", StringTag.class).getAll();
-                    consoleCommands.forEach(commandTag -> Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), commandTag.data.replaceAll("%p", "\"" + playerName + "\"")));
+                    consoleCommands.forEach(commandTag -> {
+                        String command = commandTag.data.replaceAll("%p", "\"" + playerName + "\"");
+
+                        if (!command.replaceAll(" ", "").equals("")) {
+                            Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), command);
+                        }
+                    });
 
                     List<StringTag> playerCommands = namedTag.getList("PlayerCommands", StringTag.class).getAll();
-                    playerCommands.forEach(commandTag -> Server.getInstance().dispatchCommand(player, commandTag.data));
+                    playerCommands.forEach(commandTag -> {
+                        String command = commandTag.data;
+
+                        if (!command.replaceAll(" ", "").equals("")) {
+                            Server.getInstance().dispatchCommand(player, command);
+                        }
+                    });
                 }
             }
         }
