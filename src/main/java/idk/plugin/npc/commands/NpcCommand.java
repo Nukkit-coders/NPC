@@ -9,8 +9,11 @@ import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.nbt.tag.CompoundTag;
-import idk.plugin.npc.NPC;
 import ru.nukkitx.forms.elements.CustomForm;
+
+import java.util.UUID;
+
+import static idk.plugin.npc.NPC.*;
 
 public class NpcCommand extends Command {
 
@@ -18,7 +21,7 @@ public class NpcCommand extends Command {
         super("npc", "", "/npc");
         this.getCommandParameters().put("default",
                 new CommandParameter[]{
-                        new CommandParameter("create", CommandParamType.TEXT, false)
+                        new CommandParameter("create | getId | list | teleport | edit", CommandParamType.TEXT, false)
                 });
         this.setPermission("npc.use");
     }
@@ -35,6 +38,7 @@ public class NpcCommand extends Command {
         }
 
         Player player = (Player) sender;
+        UUID playerUniqueId = player.getUniqueId();
 
         if (args.length < 1) {
             player.sendMessage(
@@ -53,8 +57,9 @@ public class NpcCommand extends Command {
             case "spawn":
             case "create":
                 CustomForm customForm = new CustomForm("§l§8Create NPC")
-                        .addDropDown("§l§7Entity Type", NPC.entityList, 16)
+                        .addDropDown("§l§7Entity Type", entityList, 16)
                         .addInput("§l§7Entity Name")
+                        .addToggle("§l§fRotаtion", true)
                         .addInput("§l§7Commands (Across ,)", "cmd1, cmd2, cmd3")
                         .addToggle("§l§fExecute by playеr", true)
                         .addLabel("\n§l§7If the npc is a Human:")
@@ -66,28 +71,28 @@ public class NpcCommand extends Command {
 
                     String entityType = (String) data.get(0);
                     String entityName = (String) data.get(1);
-                    String[] commands = ((String) data.get(2)).split(", ");
-                    boolean isPlayer = (Boolean) data.get(3);
-                    boolean visibleTag = (Boolean) data.get(5);
-                    boolean hasUseItem = entityType.equals("Human") ? (Boolean) data.get(6) : false;
-                    CompoundTag compoundTag = NPC.nbt(target, entityType, commands, isPlayer);
+                    Boolean isRotation = (Boolean) data.get(2);
+                    String[] commands = ((String) data.get(3)).split(", ");
+                    boolean isPlayer = (Boolean) data.get(4);
+                    boolean visibleTag = (Boolean) data.get(6);
+                    boolean hasUseItem = entityType.equals("Human") ? (Boolean) data.get(7) : false;
+                    CompoundTag compoundTag = nbt(player, entityType, commands, isPlayer, isRotation);
 
-                    Entity entity = Entity.createEntity(entityType, target.chunk, compoundTag);
-                    entity.setNameTag(entityName);
+                    Entity entity = Entity.createEntity(entityType + "NPC", player.chunk, compoundTag);
+                    if (!entityName.replace(" ", "").equals("")) {
+                        entity.setNameTag(entityName);
+                    }
+                    entity.setNameTagVisible(visibleTag);
+                    entity.setNameTagAlwaysVisible(visibleTag);
 
                     if (entityType.equals("Human")) {
                         EntityHuman human = (EntityHuman) entity;
 
                         if (hasUseItem) {
-                            PlayerInventory inventory = target.getInventory();
+                            PlayerInventory inventory = player.getInventory();
                             PlayerInventory humanInventory = human.getInventory();
 
                             humanInventory.setContents(inventory.getContents());
-                        }
-
-                        if (!visibleTag) {
-                            human.setNameTagVisible(false);
-                            human.setNameTagAlwaysVisible(false);
                         }
                     }
 
@@ -98,16 +103,28 @@ public class NpcCommand extends Command {
 
             case "getid":
             case "id":
-                NPC.id.add(player.getName());
+                if (npcEditorsList.contains(playerUniqueId)) {
+                    player.sendMessage("§cYou are in entity edit mode");
+                    break;
+                }
+
+                idRecipientList.add(playerUniqueId);
                 player.sendMessage("§aID MODE - click an entity to get the ID");
                 break;
 
             case "list":
             case "entities":
-                sender.sendMessage("§aAvailable entities: §3" + NPC.entityList.toString());
+                sender.sendMessage("§aAvailable entities: §3" + entityList.toString());
                 break;
 
             case "edit":
+                if (idRecipientList.contains(playerUniqueId)) {
+                    player.sendMessage("§cYou are in entity get id mode");
+                    break;
+                }
+
+                npcEditorsList.add(playerUniqueId);
+                player.sendMessage("§aEDIT MODE - click an entity to edit it");
                 break;
         }
 

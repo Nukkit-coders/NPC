@@ -1,20 +1,24 @@
-package idk.plugin.npc.listeners;
+package idk.plugin.npc.listeners.entity;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.EventHandler;
+import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.StringTag;
-import idk.plugin.npc.NPC;
+import ru.nukkitx.forms.elements.SimpleForm;
 
 import java.util.List;
+import java.util.UUID;
+
+import static idk.plugin.npc.NPC.*;
 
 public class EntityDamageListener implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         CompoundTag namedTag = entity.namedTag;
@@ -27,24 +31,31 @@ public class EntityDamageListener implements Listener {
 
                 if (damager instanceof Player) {
                     Player player = (Player) damager;
-                    String playerName = player.getName();
+                    UUID playerUniqueId = player.getUniqueId();
 
-                    if (NPC.id.contains(playerName)) {
+                    if (idRecipientList.contains(playerUniqueId)) {
                         player.sendMessage("§aThe ID from that entity is " + entity.getId());
-                        NPC.id.remove(playerName);
+                        idRecipientList.remove(playerUniqueId);
                         return;
                     }
 
-                    if (NPC.kill.contains(playerName)) {
-                        entity.close();
-                        player.sendMessage("§aEntity removed");
-                        NPC.kill.remove(playerName);
+                    if (npcEditorsList.contains(playerUniqueId)) {
+                        SimpleForm simpleForm = new SimpleForm("§l§8NPC Editing")
+                                .addButton("");
+                        simpleForm.send(player, (target, form, data) -> {
+                            switch (data) {
+                                case 0:
+                                    break;
+                            }
+                        });
+
+                        npcEditorsList.remove(playerUniqueId);
                         return;
                     }
 
                     List<StringTag> consoleCommands = namedTag.getList("Commands", StringTag.class).getAll();
                     consoleCommands.forEach(commandTag -> {
-                        String command = commandTag.data.replaceAll("%p", "\"" + playerName + "\"");
+                        String command = commandTag.data.replaceAll("%p", "\"" + player.getName() + "\"");
 
                         if (!command.replaceAll(" ", "").equals("")) {
                             Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), command);
