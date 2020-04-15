@@ -1,7 +1,7 @@
 name: NPC
 version: "${pom.version}"
 api: ["1.0.9"]
-author: PetteriM1, kkdevs
+author: PetteriM1, C1oky
 main: idk.plugin.npc.Loader
 
 permissions:

@@ -60,10 +60,10 @@ public class NpcCommand extends Command {
                         .addDropDown("§l§7Entity Type", entityList, 16)
                         .addInput("§l§7Entity Name")
                         .addToggle("§l§fRotаtion", true)
+                        .addToggle("§l§fNametag visibilitу", true)
                         .addInput("§l§7Commands (Across ,)", "cmd1, cmd2, cmd3")
                         .addToggle("§l§fExecute by playеr", true)
                         .addLabel("\n§l§7If the npc is a Human:")
-                        .addToggle("§l§fNametag visibilitу", true)
                         .addToggle("§l§fUsе itеms on you", false);
 
                 customForm.send(player, (target, form, data) -> {
@@ -71,10 +71,10 @@ public class NpcCommand extends Command {
 
                     String entityType = (String) data.get(0);
                     String entityName = (String) data.get(1);
-                    Boolean isRotation = (Boolean) data.get(2);
-                    String[] commands = ((String) data.get(3)).split(", ");
-                    boolean isPlayer = (Boolean) data.get(4);
-                    boolean visibleTag = (Boolean) data.get(6);
+                    boolean isRotation = (Boolean) data.get(2);
+                    boolean visibleTag = (Boolean) data.get(3);
+                    String[] commands = ((String) data.get(4)).split(", ");
+                    boolean isPlayer = (Boolean) data.get(5);
                     boolean hasUseItem = entityType.equals("Human") ? (Boolean) data.get(7) : false;
                     CompoundTag compoundTag = nbt(player, entityType, commands, isPlayer, isRotation);
 
@@ -115,6 +115,27 @@ public class NpcCommand extends Command {
             case "list":
             case "entities":
                 sender.sendMessage("§aAvailable entities: §3" + entityList.toString());
+                break;
+
+            case "tphere":
+            case "teleport":
+                if (args.length < 2) {
+                    player.sendMessage("§cUsage: /npc teleport <ID>");
+                    return true;
+                }
+
+                try {
+                    Entity entity = player.getLevel().getEntity(Integer.parseInt(args[1]));
+
+                    if (entity.namedTag.getBoolean("npc")) {
+                        entity.teleport(player);
+                        entity.respawnToAll();
+                        player.sendMessage("§aEntity teleported");
+                        return true;
+                    }
+                } catch (Exception exception) {
+                    player.sendMessage("§cUsage: /npc teleport <ID>");
+                }
                 break;
 
             case "edit":

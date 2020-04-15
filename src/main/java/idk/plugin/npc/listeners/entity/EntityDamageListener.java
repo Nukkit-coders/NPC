@@ -3,13 +3,16 @@ package idk.plugin.npc.listeners.entity;
 import cn.nukkit.Player;
 import cn.nukkit.Server;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.StringTag;
+import ru.nukkitx.forms.elements.CustomForm;
 import ru.nukkitx.forms.elements.SimpleForm;
 
 import java.util.List;
@@ -40,16 +43,52 @@ public class EntityDamageListener implements Listener {
                     }
 
                     if (npcEditorsList.contains(playerUniqueId)) {
-                        SimpleForm simpleForm = new SimpleForm("§l§8NPC Editing")
-                                .addButton("");
+                        CompoundTag compoundTag = entity.namedTag;
+                        SimpleForm simpleForm = new SimpleForm("§l§8NPC Editing", "§l§7NPC ID - " + entity.getId() + "\nNPC Name - \"" + entity.getName() + "\"\n\n")
+                                .addButton("Commands")
+                                .addButton("Size")
+                                .addButton("§cKill");
+                        if (compoundTag.getBoolean("isHuman")) {
+                            simpleForm.addButton("Replace inventory");
+                        }
+
                         simpleForm.send(player, (target, form, data) -> {
                             switch (data) {
-                                case 0:
+                                case 0: //Commands
+                                    break;
+                                case 1: //Size
+                                    this.sendChangeSize(target, entity);
+                                    break;
+                                case 2: //Kill
+                                    entity.close();
+                                    break;
+                                case 3: //Replace inventory
+                                    EntityHuman human = (EntityHuman) entity;
+                                    PlayerInventory playerInventory = player.getInventory();
+                                    PlayerInventory inventory = human.getInventory();
+
+                                    inventory.setItemInHand(playerInventory.getItemInHand());
+                                    namedTag.putString("Item", playerInventory.getItemInHand().getName());
+
+                                    inventory.setHelmet(playerInventory.getHelmet());
+                                    namedTag.putString("Helmet", playerInventory.getHelmet().getName());
+
+                                    inventory.setChestplate(playerInventory.getChestplate());
+                                    namedTag.putString("Chestplate", playerInventory.getChestplate().getName());
+
+                                    inventory.setLeggings(playerInventory.getLeggings());
+                                    namedTag.putString("Leggings", playerInventory.getLeggings().getName());
+
+                                    inventory.setBoots(playerInventory.getBoots());
+                                    namedTag.putString("Boots", playerInventory.getBoots().getName());
+
+                                    entity.respawnToAll();
                                     break;
                             }
                         });
 
                         npcEditorsList.remove(playerUniqueId);
+                        player.sendMessage("§aChanges applied!");
                         return;
                     }
 
@@ -73,5 +112,23 @@ public class EntityDamageListener implements Listener {
                 }
             }
         }
+    }
+
+    private void sendChangeSize(Player player, Entity entity) {
+        new CustomForm("§l§8Change Size")
+                .addInput("")
+                .send(player, (target, form, data) -> {
+                    if (data == null) return;
+
+                    try {
+                        float scale = Float.parseFloat((String) data.get(0));
+                        entity.namedTag.putFloat("scale", scale);
+                        entity.setScale(scale);
+                        entity.respawnToAll();
+                    } catch (Exception exception) {
+                        player.sendMessage("§cEnter float value!");
+                        sendChangeSize(target, entity);
+                    }
+                });
     }
 }
