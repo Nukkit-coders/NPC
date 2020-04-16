@@ -31,4 +31,4 @@ jobs:
         if: success()
         with:
           name: Nukkit
-          path: target/NPC-1.0-SNAPSHOT.jar
+          path: target/NPC-3.0.0-SNAPSHOT.jar
