@@ -148,7 +148,6 @@ public class NpcCommand extends Command {
                 player.sendMessage("§aEDIT MODE - click an entity to edit it");
                 break;
         }
-
         return false;
     }
 }
