@@ -13,9 +13,7 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.StringTag;
-import ru.nukkitx.forms.elements.CustomForm;
-import ru.nukkitx.forms.elements.ModalForm;
-import ru.nukkitx.forms.elements.SimpleForm;
+import ru.nukkitx.forms.elements.*;
 
 import java.util.*;
 
