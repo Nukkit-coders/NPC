@@ -4,10 +4,8 @@ import cn.nukkit.Server;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.plugin.PluginManager;
 import idk.plugin.npc.commands.NpcCommand;
-import idk.plugin.npc.listeners.entity.EntityDamageListener;
-import idk.plugin.npc.listeners.entity.EntityVehicleEnterListener;
-import idk.plugin.npc.listeners.entity.player.PlayerMoveListener;
-import idk.plugin.npc.listeners.entity.player.PlayerQuitListener;
+import idk.plugin.npc.listeners.entity.*;
+import idk.plugin.npc.listeners.entity.player.*;
 
 import java.util.Arrays;
 
@@ -22,6 +20,7 @@ public class Loader extends PluginBase {
             pluginManager.disablePlugin(this);
             return;
         }
+
         this.registerListeners();
         this.registerCommands();
     }

@@ -2,7 +2,6 @@ package idk.plugin.npc.listeners.entity;
 
 import cn.nukkit.Player;
 import cn.nukkit.Server;
-import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.event.EventHandler;
@@ -48,8 +47,24 @@ public class EntityDamageListener implements Listener {
                         return;
                     }
 
-                    this.dispatchCommands(Server.getInstance().getConsoleSender(), namedTag.getList("Commands", StringTag.class).getAll());
-                    this.dispatchCommands(player, namedTag.getList("PlayerCommands", StringTag.class).getAll());
+                    List<StringTag> commands = namedTag.getList("Commands", StringTag.class).getAll();
+                    List<StringTag> playerCommands = namedTag.getList("PlayerCommands", StringTag.class).getAll();
+
+                    commands.forEach(commandTag -> {
+                        String command = commandTag.data;
+
+                        if (!command.replaceAll(" ", "").equals("")) {
+                            Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), command.replaceAll("%p", "\"" + player.getName() + "\""));
+                        }
+                    });
+
+                    playerCommands.forEach(commandTag -> {
+                        String command = commandTag.data;
+
+                        if (!command.replaceAll(" ", "").equals("")) {
+                            Server.getInstance().dispatchCommand(player, command.replaceAll("%p", "\"" + player.getName() + "\""));
+                        }
+                    });
                 }
             }
         }
@@ -219,16 +234,6 @@ public class EntityDamageListener implements Listener {
 
                         this.sendNPCEditingForm(target1, entity);
                     });
-        });
-    }
-
-    private void dispatchCommands(CommandSender sender, List<StringTag> tagList) {
-        tagList.forEach(commandTag -> {
-            String command = commandTag.data.replaceAll("%p", "\"" + sender.getName() + "\"");
-
-            if (!command.replaceAll(" ", "").equals("")) {
-                Server.getInstance().dispatchCommand(sender, command);
-            }
         });
     }
 }
