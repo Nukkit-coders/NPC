@@ -3,6 +3,7 @@ package idk.plugin.npc.entities;
 import cn.nukkit.Player;
 import cn.nukkit.entity.EntityHuman;
 import cn.nukkit.entity.data.FloatEntityData;
+import cn.nukkit.entity.data.Skin;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -20,6 +21,9 @@ public class NPC_Human extends EntityHuman {
         if (!this.hasSpawned.containsKey(player.getLoaderId())) {
             this.hasSpawned.put(player.getLoaderId(), player);
 
+            Skin skin = this.skin;
+            skin.setTrusted(true);
+            this.setSkin(skin);
             this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, new Player[]{player});
 
             AddPlayerPacket pk = new AddPlayerPacket();
