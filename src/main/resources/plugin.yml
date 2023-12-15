@@ -1,15 +1,16 @@
 name: NPC
 version: "${pom.version}"
-api: ["1.0.9"]
+api: ["1.0.14"]
 author: PetteriM1
 main: idk.plugin.npc.NPC
+load: STARTUP
 
 commands:
   npc:
-    description: NPC command
-    usage: "/npc"
+    description: Spawn and modify NPCs
+    usage: "/npc [action]"
     permission: npc.edit
 permissions:
   npc.edit:
-    description: "NPC permission"
+    description: "Allows the player to spawn and modify NPCs"
     default: op

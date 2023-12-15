@@ -8,6 +8,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.entity.EntityVehicleEnterEvent;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.nbt.tag.StringTag;
 import idk.plugin.npc.entities.NPC_Entity;
 import idk.plugin.npc.entities.NPC_Human;
@@ -20,35 +21,36 @@ public class EventListener implements Listener {
     public void onDamage(EntityDamageEvent e) {
         Entity entity = e.getEntity();
 
-        if (entity instanceof NPC_Entity || entity instanceof NPC_Human || entity.namedTag.getBoolean("npc")) {
-            e.setCancelled();
+        if (entity instanceof NPC_Entity || entity instanceof NPC_Human) {
+            e.setCancelled(true);
 
             if (e instanceof EntityDamageByEntityEvent) {
                 EntityDamageByEntityEvent ev = (EntityDamageByEntityEvent) e;
                 if (ev.getDamager() instanceof Player) {
                     Player player = (Player) ev.getDamager();
-                    String name = player.getName();
+                    Long name = player.getId();
 
-                    if (NPC.id.contains(name)) {
-                        player.sendMessage("§aThe ID from that entity is " + entity.getId());
-                        NPC.id.remove(name);
-
-                    } else if (NPC.kill.contains(name)) {
+                    if (NPC.cmd_id.contains(name)) {
+                        player.sendMessage("§aThe ID of this entity is §e" + entity.getId());
+                        NPC.cmd_id.remove(name);
+                    } else if (NPC.cmd_kill.contains(name)) {
                         entity.close();
                         player.sendMessage("§aEntity removed");
-                        NPC.kill.remove(name);
-
+                        NPC.cmd_kill.remove(name);
                     } else {
                         List<StringTag> cmddd = entity.namedTag.getList("Commands", StringTag.class).getAll();
                         for (StringTag cmdd : cmddd) {
                             String cmd = cmdd.data;
-                            cmd = cmd.replaceAll("%p", "\"" + player.getName() + "\"");
+                            cmd = cmd.replace("%p", "\"" + player.getName() + "\"");
+                            cmd = cmd.replace("%uuid", player.getUniqueId().toString());
                             Server.getInstance().dispatchCommand(Server.getInstance().getConsoleSender(), cmd);
                         }
 
                         List<StringTag> cmdddd = entity.namedTag.getList("PlayerCommands", StringTag.class).getAll();
                         for (StringTag cmdd : cmdddd) {
                             String cmd = cmdd.data;
+                            cmd = cmd.replace("%p", "\"" + player.getName() + "\"");
+                            cmd = cmd.replace("%uuid", player.getUniqueId().toString());
                             Server.getInstance().dispatchCommand(player, cmd);
                         }
                     }
@@ -62,5 +64,11 @@ public class EventListener implements Listener {
         if (e.getEntity() instanceof NPC_Entity || e.getEntity() instanceof NPC_Human) {
             e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        NPC.cmd_id.remove(e.getPlayer().getId());
+        NPC.cmd_kill.remove(e.getPlayer().getId());
     }
 }

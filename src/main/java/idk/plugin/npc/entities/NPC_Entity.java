@@ -1,7 +1,6 @@
 package idk.plugin.npc.entities;
 
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import java.util.HashMap;
@@ -9,26 +8,39 @@ import java.util.Map;
 
 public abstract class NPC_Entity extends Entity {
 
-    static Map<Integer, Float> map = new HashMap<>();
+    private static final Map<Integer, Float> SIZES = new HashMap<>();
 
     static {
-        map.put(10, (float)0.4); map.put(11, (float)1.0); map.put(12, (float)0.6); map.put(13, (float)0.8);
-        map.put(14, (float)0.4); map.put(15, (float)1.4); map.put(16, (float)0.8); map.put(17, (float)0.6);
-        map.put(18, (float)0.4); map.put(19, (float)0.4); map.put(20, (float)2.4); map.put(21, (float)1.2);
-        map.put(22, (float)0.4); map.put(23, (float)1.2); map.put(24, (float)0.9); map.put(25, (float)1.2);
-        map.put(26, (float)1.2); map.put(27, (float)1.2); map.put(114, (float)1.95); map.put(118, (float)1.95);
-        map.put(32, (float)1.4); map.put(33, (float)1.2); map.put(34, (float)1.4); map.put(35, (float)0.5);
-        map.put(36, (float)1.4); map.put(37, (float)1.0); map.put(38, (float)2.4); map.put(39, (float)0.4);
-        map.put(40, (float)0.2); map.put(41, (float)4.5); map.put(42, (float)1.0); map.put(43, (float)1.4);
-        map.put(44, (float)1.4); map.put(45, (float)1.6); map.put(46, (float)1.4); map.put(47, (float)1.4);
-        map.put(48, (float)2.1); map.put(65, (float)1.0); map.put(66, (float)0.5); map.put(84, (float)0.7);
-        map.put(90, (float)0.6); map.put(104,(float)1.6); map.put(57, (float)1.6); map.put(105,(float)0.4);
+        SIZES.put(10, 0.7f); SIZES.put(11, 1.3f); SIZES.put(12, 0.9f); SIZES.put(13, 1.3f);
+        SIZES.put(14, 0.8f); SIZES.put(15, 1.9f); SIZES.put(16, 1.3f); SIZES.put(17, 0.95f);
+        SIZES.put(18, 0.402f); SIZES.put(19, 0.9f); SIZES.put(20, 2.9f); SIZES.put(21, 1.8f);
+        SIZES.put(22, 0.7f); SIZES.put(23, 1.6f); SIZES.put(24, 1.6f); SIZES.put(25, 1.6f);
+        SIZES.put(26, 1.6f); SIZES.put(27, 1.6f); SIZES.put(114, 1.9f); SIZES.put(118, 1.9f);
+        SIZES.put(32, 1.9f); SIZES.put(33, 1.8f); SIZES.put(34, 1.9f); SIZES.put(35, 0.9f);
+        SIZES.put(36, 1.9f); SIZES.put(37, 0.52f); SIZES.put(38, 2.9f); SIZES.put(39, 0.3f);
+        SIZES.put(40, 0.5f); SIZES.put(41, 4.0f); SIZES.put(42, 0.52f); SIZES.put(43, 1.8f);
+        SIZES.put(44, 1.9f); SIZES.put(45, 1.9f); SIZES.put(46, 1.9f); SIZES.put(47, 2.01f);
+        SIZES.put(48, 2.412f); SIZES.put(104,1.9f); SIZES.put(57, 1.9f); SIZES.put(105,0.8f);
+        SIZES.put(121, 0.7f); SIZES.put(122, 0.5f); SIZES.put(31, 0.6f); SIZES.put(74, 0.4f);
+        SIZES.put(125, 1.85f); SIZES.put(124, 0.9f); SIZES.put(123, 1.9f); SIZES.put(126, 0.9f);
+        SIZES.put(59, 1.9f); SIZES.put(127, 1.9f); SIZES.put(128, 0.9f); SIZES.put(129, 0.95f);
+        SIZES.put(130, 0.42f); SIZES.put(131, 2.9f); SIZES.put(132, 0.55f); SIZES.put(133, 0.8f);
+        SIZES.put(134, 0.6f);
     }
 
     public NPC_Entity(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-        this.setDataProperty(new FloatEntityData(Entity.DATA_BOUNDING_BOX_HEIGHT, map.getOrDefault(this.getNetworkId(), (float) 1)), true);
-        this.setDataProperty(new FloatEntityData(DATA_SCALE, this.namedTag.getFloat("scale")));
+        this.fireProof = true;
+        if (namedTag.contains("Scale")) {
+            setScale(namedTag.getFloat("Scale"));
+        }
+    }
+
+    public float getHeight() {
+        return SIZES.getOrDefault(this.getNetworkId(), 1.0f);
+    }
+
+    public float getWidth() {
+        return 0.95f;
     }
 }
-	

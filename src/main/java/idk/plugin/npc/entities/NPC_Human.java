@@ -2,29 +2,31 @@ package idk.plugin.npc.entities;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.EntityHuman;
-import cn.nukkit.entity.data.FloatEntityData;
 import cn.nukkit.entity.data.Skin;
-import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.AddPlayerPacket;
 
+import java.util.UUID;
+
 public class NPC_Human extends EntityHuman {
-    
+
     public NPC_Human(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
-        this.setDataProperty(new FloatEntityData(DATA_SCALE, this.namedTag.getFloat("scale")));
+        if (namedTag.contains("Scale")) {
+            setScale(namedTag.getFloat("Scale"));
+        }
+        if (namedTag.contains("ScoreTag")) {
+            setScoreTag(namedTag.getString("ScoreTag"));
+        }
     }
-      
+
     @Override
     public void spawnTo(Player player) {
         if (!this.hasSpawned.containsKey(player.getLoaderId())) {
             this.hasSpawned.put(player.getLoaderId(), player);
 
-            Skin skin = this.skin;
-            skin.setTrusted(true);
-            this.setSkin(skin);
-            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.skin, new Player[]{player});
+            this.server.updatePlayerListData(this.getUniqueId(), this.getId(), this.getName(), this.checkSkin(this.skin), new Player[]{player});
 
             AddPlayerPacket pk = new AddPlayerPacket();
             pk.uuid = this.getUniqueId();
@@ -39,21 +41,23 @@ public class NPC_Human extends EntityHuman {
             pk.speedZ = (float) this.motionZ;
             pk.yaw = (float) this.yaw;
             pk.pitch = (float) this.pitch;
-            this.inventory.setItemInHand(Item.fromString(this.namedTag.getString("Item")));
-            pk.item = this.getInventory().getItemInHand();
+            pk.item = this.inventory.getItemInHand();
             pk.metadata = this.dataProperties;
             player.dataPacket(pk);
-            
-            this.inventory.setHelmet(Item.fromString(this.namedTag.getString("Helmet")));
-            this.inventory.setChestplate(Item.fromString(this.namedTag.getString("Chestplate")));
-            this.inventory.setLeggings(Item.fromString(this.namedTag.getString("Leggings")));
-            this.inventory.setBoots(Item.fromString(this.namedTag.getString("Boots")));
-            
+
+            this.inventory.sendHeldItem(player);
             this.inventory.sendArmorContents(player);
+            this.offhandInventory.sendContents(player);
 
             this.server.removePlayerListData(this.getUniqueId(), new Player[]{player});
-
-            super.spawnTo(player);
         }
+    }
+
+    private Skin checkSkin(Skin skin) {
+        skin.setTrusted(true);
+        if (!skin.isPersona()) {
+            skin.setFullSkinId(UUID.randomUUID().toString());
+        }
+        return skin;
     }
 }

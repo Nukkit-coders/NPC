@@ -3,12 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>idk.plugin.npc</groupId>
     <artifactId>NPC</artifactId>
-    <version>2.2.7</version>
+    <version>2.7.1</version>
     <build>
-        <defaultGoal>install</defaultGoal>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
@@ -25,7 +23,7 @@
             <resource>
                 <targetPath>.</targetPath>
                 <filtering>true</filtering>
-                <directory>${basedir}</directory>
+                <directory>${basedir}/src/main/resources</directory>
                 <includes>
                     <include>plugin.yml</include>
                 </includes>
@@ -35,7 +33,7 @@
     <repositories>
         <repository>
             <id>nukkitx</id>
-            <url>https://repo.nukkitx.com/main/</url>
+            <url>https://repo.opencollab.dev/main/</url>
         </repository>
     </repositories>
     <dependencies>

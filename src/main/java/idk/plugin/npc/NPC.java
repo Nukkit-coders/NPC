@@ -1,38 +1,30 @@
 package idk.plugin.npc;
 
-import cn.nukkit.Player;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.entity.Entity;
-import cn.nukkit.inventory.PlayerInventory;
-import cn.nukkit.nbt.tag.*;
 import cn.nukkit.plugin.PluginBase;
 import idk.plugin.npc.entities.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NPC extends PluginBase {
 
-    public static final List<String> entities = Arrays.asList("Bat", "Blaze", "Cat", "CaveSpider", "Chicken", "Cow", "Creeper",
-            "Dolphin", "Donkey", "ElderGuardian", "Enderman", "Endermite", "Evoker", "Ghast", "Guardian",
-            "Horse", "Human", "Husk", "IronGolem", "Lama", "Mooshroom", "MagmaCube", "Mule", "Ocelot", "Panda", "Parrot", "Phantom",
-            "Pig", "Pillager", "PolarBear", "Rabbit", "SkeletonHorse", "Sheep", "Shulker", "Silverfish", "Skeleton", "Slime",
-            "Snowman", "Spider", "Squid", "Stray", "Turtle", "Vex", "Villager", "Vindicator", "WanderingTrader", "Witch", "Wither",
-            "WitherSkeleton", "Wolf", "ZombieHorse", "Zombie", "ZombiePigman", "ZombieVillager");
+    static List<Long> cmd_id = new ArrayList<>();
+    static List<Long> cmd_kill = new ArrayList<>();
 
-    static List<String> id = new ArrayList<>();
-    static List<String> kill = new ArrayList<>();
+    @Override
+    public void onLoad() {
+        registerNPCs();
+    }
 
     @Override
     public void onEnable() {
-        registerNPC();
         getServer().getPluginManager().registerEvents(new EventListener(), this);
     }
 
-    private void registerNPC() {
+    private static void registerNPCs() {
         Entity.registerEntity(NPC_Bat.class.getSimpleName(), NPC_Bat.class);
         Entity.registerEntity(NPC_Chicken.class.getSimpleName(), NPC_Chicken.class);
         Entity.registerEntity(NPC_Cow.class.getSimpleName(), NPC_Cow.class);
@@ -52,7 +44,7 @@ public class NPC extends PluginBase {
         Entity.registerEntity(NPC_ElderGuardian.class.getSimpleName(), NPC_ElderGuardian.class);
         Entity.registerEntity(NPC_Guardian.class.getSimpleName(), NPC_Guardian.class);
         Entity.registerEntity(NPC_Snowman.class.getSimpleName(), NPC_Snowman.class);
-        Entity.registerEntity(NPC_Lama.class.getSimpleName(), NPC_Lama.class);
+        Entity.registerEntity(NPC_Llama.class.getSimpleName(), NPC_Llama.class);
         Entity.registerEntity(NPC_Squid.class.getSimpleName(), NPC_Squid.class);
         Entity.registerEntity(NPC_Vindicator.class.getSimpleName(), NPC_Vindicator.class);
         Entity.registerEntity(NPC_Vex.class.getSimpleName(), NPC_Vex.class);
@@ -88,430 +80,26 @@ public class NPC extends PluginBase {
         Entity.registerEntity(NPC_Panda.class.getSimpleName(), NPC_Panda.class);
         Entity.registerEntity(NPC_Pillager.class.getSimpleName(), NPC_Pillager.class);
         Entity.registerEntity(NPC_WanderingTrader.class.getSimpleName(), NPC_WanderingTrader.class);
-    }
-
-    public CompoundTag nbt(Player p, String[] args, String name) {
-        CompoundTag nbt = new CompoundTag()
-                .putList(new ListTag<>("Pos")
-                        .add(new DoubleTag("", p.x))
-                        .add(new DoubleTag("", p.y))
-                        .add(new DoubleTag("", p.z)))
-                .putList(new ListTag<DoubleTag>("Motion")
-                        .add(new DoubleTag("", 0))
-                        .add(new DoubleTag("", 0))
-                        .add(new DoubleTag("", 0)))
-                .putList(new ListTag<FloatTag>("Rotation")
-                        .add(new FloatTag("", (float) p.getYaw()))
-                        .add(new FloatTag("", (float) p.getPitch())))
-                .putBoolean("Invulnerable", true)
-                .putString("NameTag", name)
-                .putList(new ListTag<StringTag>("Commands"))
-                .putList(new ListTag<StringTag>("PlayerCommands"))
-                .putBoolean("npc", true)
-                .putFloat("scale", 1);
-        if ("Human".equals(args[1])) {
-            CompoundTag skinTag = new CompoundTag()
-                    .putByteArray("Data", p.getSkin().getSkinData().data)
-                    .putInt("SkinImageWidth", p.getSkin().getSkinData().width)
-                    .putInt("SkinImageHeight", p.getSkin().getSkinData().height)
-                    .putString("ModelId", p.getSkin().getSkinId())
-                    .putString("CapeId", p.getSkin().getCapeId())
-                    .putByteArray("CapeData", p.getSkin().getCapeData().data)
-                    .putInt("CapeImageWidth", p.getSkin().getCapeData().width)
-                    .putInt("CapeImageHeight", p.getSkin().getCapeData().height)
-                    .putByteArray("SkinResourcePatch", p.getSkin().getSkinResourcePatch().getBytes(StandardCharsets.UTF_8))
-                    .putByteArray("GeometryData", p.getSkin().getGeometryData().getBytes(StandardCharsets.UTF_8))
-                    .putByteArray("AnimationData", p.getSkin().getAnimationData().getBytes(StandardCharsets.UTF_8))
-                    .putBoolean("PremiumSkin", p.getSkin().isPremium())
-                    .putBoolean("PersonaSkin", p.getSkin().isPersona())
-                    .putBoolean("CapeOnClassicSkin", p.getSkin().isCapeOnClassic());
-            nbt.putCompound("Skin", skinTag);
-            nbt.putBoolean("ishuman", true);
-            nbt.putString("Item", p.getInventory().getItemInHand().getName());
-            nbt.putString("Helmet", p.getInventory().getHelmet().getName());
-            nbt.putString("Chestplate", p.getInventory().getChestplate().getName());
-            nbt.putString("Leggings", p.getInventory().getLeggings().getName());
-            nbt.putString("Boots", p.getInventory().getBoots().getName());
-        }
-        return nbt;
+        Entity.registerEntity(NPC_Fox.class.getSimpleName(), NPC_Fox.class);
+        Entity.registerEntity(NPC_Bee.class.getSimpleName(), NPC_Bee.class);
+        Entity.registerEntity(NPC_Strider.class.getSimpleName(), NPC_Strider.class);
+        Entity.registerEntity(NPC_Zoglin.class.getSimpleName(), NPC_Zoglin.class);
+        Entity.registerEntity(NPC_Piglin.class.getSimpleName(), NPC_Piglin.class);
+        Entity.registerEntity(NPC_Hoglin.class.getSimpleName(), NPC_Hoglin.class);
+        Entity.registerEntity(NPC_Ravager.class.getSimpleName(), NPC_Ravager.class);
+        Entity.registerEntity(NPC_Block.class.getSimpleName(), NPC_Block.class);
+        Entity.registerEntity(NPC_PiglinBrute.class.getSimpleName(), NPC_PiglinBrute.class);
+        Entity.registerEntity(NPC_Goat.class.getSimpleName(), NPC_Goat.class);
+        Entity.registerEntity(NPC_Allay.class.getSimpleName(), NPC_Allay.class);
+        Entity.registerEntity(NPC_Axolotl.class.getSimpleName(), NPC_Axolotl.class);
+        Entity.registerEntity(NPC_Frog.class.getSimpleName(), NPC_Frog.class);
+        Entity.registerEntity(NPC_GlowSquid.class.getSimpleName(), NPC_GlowSquid.class);
+        Entity.registerEntity(NPC_Tadpole.class.getSimpleName(), NPC_Tadpole.class);
+        Entity.registerEntity(NPC_Warden.class.getSimpleName(), NPC_Warden.class);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cThis command only works in game");
-            return true;
-        }
-
-        Player player = (Player) sender;
-
-        if (command.getName().equalsIgnoreCase("npc")) {
-            if (args.length < 1) {
-                sendHelp(sender);
-                return true;
-            }
-            switch (args[0].toLowerCase()) {
-                case "spawn":
-                    if (args.length < 2) {
-                        sender.sendMessage("§cUsage: /npc spawn <entity> [name]");
-                        return true;
-                    }
-
-                    if (!entities.contains(args[1])) {
-                        sender.sendMessage("§cEntity §4" + args[1] + "§c is not supported. You can see all supported entities with §e/npc list§c command. Notice that the entity name is case sensitive.");
-                        return true;
-                    }
-                    String name;
-                    if (args.length < 2) {
-                        name = "%k";
-                    } else {
-                        name = String.join(" ", args);
-                        name = name.replaceFirst("spawn", "");
-                        name = name.replaceFirst(args[1], "");
-                        name = name.replaceFirst(" ", "");
-                        name = name.replaceFirst(" ", "");
-                    }
-                    name = name.replaceAll("%n", "\n");
-                    CompoundTag nbt = this.nbt(player, args, name);
-                    Entity ent = Entity.createEntity("NPC_" + args[1], player.chunk, nbt);
-                    ent.setNameTag(name);
-                    if (!"%k".equals(name)) {
-                        ent.setNameTagVisible(true);
-                        ent.setNameTagAlwaysVisible(true);
-                    }
-                    ent.spawnToAll();
-                    sender.sendMessage("§aNPC spawned with ID §e" + ent.getId() + " §aand the name §e" + ent.getName());
-                    return true;
-                case "getid":
-                case "id":
-                    id.add(player.getName());
-                    player.sendMessage("§aID MODE - click an entity to get the ID");
-                    return true;
-                case "addcmd":
-                    if (args.length < 3) {
-                        sender.sendMessage("§cUsage: /npc addcmd <ID> <cmd>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        player.sendMessage("§cUsage: /npc addcmd <ID> <cmd>");
-                        return true;
-                    }
-                    Entity enti = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (enti instanceof NPC_Human || enti instanceof NPC_Entity || enti.namedTag.getBoolean("npc")) {
-                        String cmd;
-                        cmd = String.join(" ", args);
-                        cmd = cmd.replaceFirst("addcmd", "");
-                        cmd = cmd.replaceFirst(args[1], "");
-                        StringTag st = new StringTag(cmd, cmd);
-                        if (enti.namedTag.getList("Commands", StringTag.class).getAll().contains(st)) {
-                            player.sendMessage("§aCommand already added");
-                            return true;
-                        }
-                        enti.namedTag.getList("Commands", StringTag.class).add(st);
-                        player.sendMessage("§aCommand added");
-                        return true;
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "addplayercmd":
-                    if (args.length < 3) {
-                        sender.sendMessage("§cUsage: /npc addplayercmd <ID> <cmd>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        player.sendMessage("§cUsage: /npc addplayercmd <ID> <cmd>");
-                        return true;
-                    }
-                    Entity enti2 = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (enti2 instanceof NPC_Human || enti2 instanceof NPC_Entity || enti2.namedTag.getBoolean("npc")) {
-                        String cmd;
-                        cmd = String.join(" ", args);
-                        cmd = cmd.replaceFirst("addplayercmd", "");
-                        cmd = cmd.replaceFirst(args[1], "");
-                        StringTag st = new StringTag(cmd, cmd);
-                        if (enti2.namedTag.getList("PlayerCommands", StringTag.class).getAll().contains(st)) {
-                            player.sendMessage("§aCommand already added");
-                            return true;
-                        }
-                        enti2.namedTag.getList("PlayerCommands", StringTag.class).add(st);
-                        player.sendMessage("§aCommand added");
-                        return true;
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "listcmd":
-                    if (args.length < 2) {
-                        sender.sendMessage("§cUsage: /npc listcmd <ID>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        sender.sendMessage("§cUsage: /npc listcmdd <ID>");
-                        return true;
-                    }
-                    Entity entity = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (entity instanceof NPC_Entity || entity instanceof NPC_Human || entity.namedTag.getBoolean("npc")) {
-                        List<StringTag> cmddd = entity.namedTag.getList("Commands", StringTag.class).getAll();
-                        player.sendMessage("§aCommands of §e" + entity.getName() + " (" + entity.getId() + ")§a:");
-                        for (StringTag cmdd : cmddd) {
-                            player.sendMessage(cmdd.data);
-                        }
-                        List<StringTag> cmdddd = entity.namedTag.getList("PlayerCommands", StringTag.class).getAll();
-                        player.sendMessage("§aPlayer commands of §e" + entity.getName() + " (" + entity.getId() + ")§a:");
-                        for (StringTag cmdd : cmdddd) {
-                            player.sendMessage(cmdd.data);
-                        }
-                        return true;
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "delcmd":
-                    if (args.length < 3) {
-                        sender.sendMessage("§cUsage: /npc delcmd <ID> <cmd>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        player.sendMessage("§cUsage: /npc delcmd <ID> <cmd>");
-                        return true;
-                    }
-                    Entity en = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (en instanceof NPC_Human || en instanceof NPC_Entity || en.namedTag.getBoolean("npc")) {
-                        String cmd;
-                        cmd = String.join(" ", args);
-                        cmd = cmd.replaceFirst("delcmd", "");
-                        cmd = cmd.replaceFirst(args[1], "");
-                        StringTag st = new StringTag(cmd, cmd);
-                        if (en.namedTag.getList("Commands", StringTag.class).getAll().contains(st)) {
-                            en.namedTag.getList("Commands", StringTag.class).remove(st);
-                            player.sendMessage("§aCommand §e" + cmd + "§a removed");
-                            return true;
-                        } else {
-                            player.sendMessage("§cCommand §e" + cmd + "§c not found");
-                            return true;
-                        }
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "delplayercmd":
-                    if (args.length < 3) {
-                        sender.sendMessage("§cUsage: /npc delplayercmd <ID> <cmd>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        player.sendMessage("§cUsage: /npc delplayercmd <ID> <cmd>");
-                        return true;
-                    }
-                    Entity en2 = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (en2 instanceof NPC_Human || en2 instanceof NPC_Entity || en2.namedTag.getBoolean("npc")) {
-                        String cmd;
-                        cmd = String.join(" ", args);
-                        cmd = cmd.replaceFirst("delplayercmd", "");
-                        cmd = cmd.replaceFirst(args[1], "");
-                        StringTag st = new StringTag(cmd, cmd);
-                        if (en2.namedTag.getList("PlayerCommands", StringTag.class).getAll().contains(st)) {
-                            en2.namedTag.getList("PlayerCommands", StringTag.class).remove(st);
-                            player.sendMessage("§aCommand §e" + cmd + "§a removed");
-                            return true;
-                        } else {
-                            player.sendMessage("§cCommand §e" + cmd + "§c not found");
-                            return true;
-                        }
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "delallcmd":
-                    if (args.length < 2) {
-                        sender.sendMessage("§cUsage: /npc delallcmd <ID>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        player.sendMessage("§cUsage: /npc delallcmd <ID>");
-                        return true;
-                    }
-                    Entity en3 = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (en3 instanceof NPC_Human || en3 instanceof NPC_Entity || en3.namedTag.getBoolean("npc")) {
-                        en3.namedTag.putList(new ListTag<StringTag>("Commands")).putList(new ListTag<StringTag>("PlayerCommands"));
-                        sender.sendMessage("§aCommands removed");
-                    } else {
-                        player.sendMessage("§cNo NPC found with that ID");
-                        return true;
-                    }
-                case "edit":
-                    if (args.length < 3) {
-                        player.sendMessage("§cUsage: /npc edit <ID> <item|armor|scale|name|tphere>");
-                        return true;
-                    }
-                    if (!isInteger(args[1])) {
-                        sender.sendMessage("§cUsage: /npc edit <ID> <item|armor|scale|name|tphere>");
-                        return true;
-                    }
-                    Entity e = player.getLevel().getEntity(Integer.parseInt(args[1]));
-                    if (e == null) {
-                        player.sendMessage("§cno entity found with that ID");
-                        return true;
-                    }
-                    PlayerInventory pl = player.getInventory();
-                    switch (args[2].toLowerCase()) {
-                        case "handitem":
-                        case "item":
-                        case "hand":
-                            if (e instanceof NPC_Human || e.namedTag.getBoolean("ishuman")) {
-                                NPC_Human nh = (NPC_Human) e;
-                                nh.getInventory().setItemInHand(pl.getItemInHand());
-                                player.sendMessage("§aItem changed to §e" + pl.getItemInHand().getName());
-                                nh.namedTag.putString("Item", pl.getItemInHand().getName());
-                                return true;
-                            } else {
-                                player.sendMessage("§cThat entity can't have item");
-                                return true;
-                            }
-                        case "armor":
-                            if (e instanceof NPC_Human || e.namedTag.getBoolean("ishuman")) {
-                                NPC_Human nh = (NPC_Human) e;
-                                nh.getInventory().setHelmet(pl.getHelmet());
-                                player.sendMessage("§aHelmet changed to §e" + pl.getHelmet().getName());
-                                nh.namedTag.putString("Helmet", pl.getHelmet().getName());
-                                nh.getInventory().setChestplate(pl.getChestplate());
-                                player.sendMessage("§aChestplate changed to §e" + pl.getChestplate().getName());
-                                nh.namedTag.putString("Chestplate", pl.getChestplate().getName());
-                                nh.getInventory().setLeggings(pl.getLeggings());
-                                player.sendMessage("§aLeggings changed to §e" + pl.getLeggings().getName());
-                                nh.namedTag.putString("Leggings", pl.getLeggings().getName());
-                                nh.getInventory().setBoots(pl.getBoots());
-                                player.sendMessage("§aBoots changed to §e" + pl.getBoots().getName());
-                                nh.namedTag.putString("Boots", pl.getBoots().getName());
-                                return true;
-                            } else {
-                                player.sendMessage("§cNo Human NPC found with that ID");
-                                return true;
-                            }
-                        case "scale":
-                        case "size":
-                            if (args.length < 4) {
-                                player.sendMessage("§cUsage: /npc edit <ID> scale <int> §eDefault is 1.");
-                                return true;
-                            }
-                            if (!isFloat(args[3])) {
-                                player.sendMessage("§cUsage: /npc edit <ID> scale <int> §eDefault is 1.");
-                                return true;
-                            }
-                            if (Float.parseFloat(args[3]) > 25) {
-                                player.sendMessage("§cMax scale is 25");
-                                return true;
-                            }
-                            if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
-                                e.setScale(Float.parseFloat(args[3]));
-                                e.namedTag.putFloat("scale", Float.parseFloat(args[3]));
-                                player.sendMessage("§aScale changed to §e" + args[3]);
-                                return true;
-                            } else {
-                                player.sendMessage("§cNo NPC found with that ID");
-                                return true;
-                            }
-                        case "name":
-                            if (args.length < 3) {
-                                player.sendMessage("§cUsage: /npc edit <ID> name <name>");
-                                return true;
-                            }
-                            if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
-                                if (args.length != 3) {
-                                    name = String.join(" ", args);
-                                    name = name.replaceFirst("edit", "");
-                                    name = name.replaceFirst("name", "");
-                                    name = name.replaceFirst(args[1], "");
-                                    name = name.replaceFirst(" ", "");
-                                    name = name.replaceFirst(" ", "");
-                                    name = name.replaceFirst(" ", "");
-                                } else {
-                                    name = "%k";
-                                    e.setNameTagVisible(false);
-                                    e.setNameTagAlwaysVisible(false);
-                                    player.sendMessage("§aName removed");
-                                }
-                                name = name.replaceAll("%n", "\n");
-                                if (!name.equals("%k")) {
-                                    e.setNameTag(name);
-                                    e.setNameTagVisible();
-                                    player.sendMessage("§aName changed to §e" + name);
-                                }
-                                e.namedTag.putString("NameTag", name);
-                                return true;
-                            } else {
-                                player.sendMessage("§cNo NPC found with that ID");
-                                return true;
-                            }
-                        case "gohere":
-                        case "tphere":
-                        case "tp":
-                        case "teleport":
-                            if (args.length < 2) {
-                                player.sendMessage("§cUsage: /npc edit <ID> tphere");
-                                return true;
-                            }
-                            if (e instanceof NPC_Human || e instanceof NPC_Entity || e.namedTag.getBoolean("npc")) {
-                                e.teleport(player);
-                                e.respawnToAll();
-                                player.sendMessage("§aEntity teleported");
-                                return true;
-                            }
-                    }
-                case "remove":
-                case "kill":
-                    if (kill.contains(player.getName())) {
-                        kill.remove(player.getName());
-                        player.sendMessage("§cKill mode deactivated");
-                    } else {
-                        kill.add(player.getName());
-                        player.sendMessage("§aKILL MODE - click an entity to remove it");
-                    }
-                    return true;
-                case "entities":
-                case "list":
-                    sender.sendMessage("§aAvailable entities: §3" + entities.toString());
-                    return true;
-                default:
-                    sendHelp(sender);
-                    return true;
-            }
-        }
-
-        return true;
-    }
-
-    private static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    private static boolean isFloat(String s) {
-        try {
-            Float.parseFloat(s);
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-    }
-
-    private static void sendHelp(CommandSender sender) {
-        sender.sendMessage("§l§a--- NPC HELP ---");
-        sender.sendMessage("§3Spawn NPC: §e/npc spawn <entity> <name>");
-        sender.sendMessage("§3Add console command: §e/npc addcmd <ID> <cmd>");
-        sender.sendMessage("§3Add player command: §e/npc addplayercmd <ID> <cmd>");
-        sender.sendMessage("§3Delete console command: §e/npc delcmd <ID> <cmd>");
-        sender.sendMessage("§3Delete player command: §e/npc delplayercmd <ID> <cmd>");
-        sender.sendMessage("§3Delete all commands: §e/npc delallcmd <ID>");
-        sender.sendMessage("§3See all commands: §e/npc listcmd <ID>");
-        sender.sendMessage("§3Edit NPC: §e/npc edit <ID> <item|armor|scale|name|tphere>");
-        sender.sendMessage("§3Get NPCs id: §e/npc getid");
-        sender.sendMessage("§3Get list of all available entities: §e/npc entities");
-        sender.sendMessage("§3Remove NPC: §e/npc remove");
+        return CommandHandler.handle(sender, command, args);
     }
 }
